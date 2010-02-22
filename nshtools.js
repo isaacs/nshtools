@@ -25,6 +25,33 @@ echo = function (message, nonl) {
   }
 };
 
+/**
+ * getOption - process any command line long option args and fire a callback if present.
+ * @param option - the command line arg you are looking for. If found it will remove it from
+ * from nsh.argv.
+ * @param callback - the callback function to fire.  First arg is error, the second is the contents
+ * of the option. (e.g. --prefix=/home/username, then contents would contain /home/username)
+ */
+getOption = function(option, callback) {
+  var self = this, scan_options = true, i = 0, arg = '';
+  if (self.argv.length <= 0) {
+    scan_options = false;
+  } 
+  while(scan_options) {
+    arg = self.argv[i];
+    if (arg && arg.indexOf(option) === 0) {
+      delete self.argv[i];
+      callback(undefined, arg.substr(option.length + 1));
+      return true;
+    }
+    i += 1;
+    if (i >= self.argv.length) {
+      scan_options = false;
+    }
+  }
+  callback("Did not find " + option, '');
+  return false;
+};
 
 /**
  * prompt - adds a prompt and callback to the work queue.
@@ -135,6 +162,7 @@ createNshtool = function () {
   self.verbose = true;
 
   self.echo = echo;
+  self.getOption = getOption;
   self.prompt = prompt;
   self.task = task;
   self.NoOp = NoOp;
@@ -210,6 +238,7 @@ mv = function (source, target, callback) {
 
 exports.createNshtool = createNshtool;
 exports.echo = echo;
+exports.getOption = getOption;
 exports.prompt = prompt;
 exports.NoOp = NoOp;
 exports.run  = run;

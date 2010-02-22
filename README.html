@@ -1,0 +1,476 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.4.4" />
+<title>nshtools.js</title>
+<style type="text/css">
+/* Debug borders */
+p, li, dt, dd, div, pre, h1, h2, h3, h4, h5, h6 {
+/*
+  border: 1px solid red;
+*/
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+tt {
+  color: navy;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  font-family: sans-serif;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+
+div.sectionbody {
+  font-family: serif;
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+span#author {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+span#email {
+}
+span#revision {
+  font-family: sans-serif;
+}
+
+div#footer {
+  font-family: sans-serif;
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+div#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+div#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+div#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.tableblock, div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.5em;
+  margin-bottom: 2.5em;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock {
+  padding-left: 2.0em;
+  margin-right: 10%;
+}
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock {
+  padding-left: 2.0em;
+  margin-right: 10%;
+}
+div.verseblock > div.content {
+  white-space: pre;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 2px solid silver;
+}
+
+div.exampleblock > div.content {
+  border-left: 2px solid silver;
+  padding: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+div.imageblock img { border: 1px solid silver; }
+span.image img { border-style: none; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+@media print {
+  div#footer-badges { display: none; }
+}
+
+div#toctitle {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+/* Workarounds for IE6's broken and incomplete CSS2. */
+
+div.sidebar-content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+div.sidebar-title, div.image-title {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  margin-top: 0.0em;
+  margin-bottom: 0.5em;
+}
+
+div.listingblock div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock-attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock-content {
+  white-space: pre;
+}
+div.verseblock-attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+
+div.exampleblock-content {
+  border-left: 2px solid silver;
+  padding-left: 0.5em;
+}
+
+/* IE6 sets dynamically generated links as visited. */
+div#toc a:visited { color: blue; }
+</style>
+</head>
+<body>
+<div id="header">
+<h1>nshtools.js</h1>
+<span id="author">R. S. Doiel</span><br />
+<span id="email"><tt>&lt;<a href="mailto:rsdoiel@gmail.com">rsdoiel@gmail.com</a>&gt;</tt></span><br />
+<span id="revision">version 0.0.0x,</span>
+2010.02.22
+</div>
+<h2 id="_name">NAME</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>nshtools.js - an object for scripting those everyday chores around your operating system. I.E. If I would have used Bash I should be able to do something almost as easily using JavaScript via node.</p></div>
+</div>
+<h2 id="_synposis">SYNPOSIS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>So you&#8217;re doing some node programming.  You need to write a quickly installer or monitor. In the past you might have written a shell script that called wget or something.  Why not just use node? Because there isn&#8217;t the highlevel view of your OS that you get with shell.  nshtools.js seeks to fill in the gap until something official comes along.</p></div>
+<h3 id="_examples">Examples</h3><div style="clear:left"></div>
+<div class="paragraph"><p>copy-tmp-file-example.js</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>#!/usr/bin/env node
+nshtools = require('nshtools');
+nsh = nshtools.createNshtool();
+nsh.cp('/tmp/file1.txt','/tmp/file2.txt', function () {
+  nsh.echo("Success!");
+});</tt></pre>
+</div></div>
+<div class="paragraph"><p>Somes you need to find out from the client an answer to a question before carring out an action.  That&#8217;s what
+run() and prompt() are for.</p></div>
+<div class="paragraph"><p>get-some-user-responses.js</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>#!/usr/bin/env node
+nshtools = require('nshtools');
+nsh = nshtools.createNshtool();
+nsh.prompt("What is your name?", function(response) {
+  nsh.echo("Glad to me you " + response.trim());
+});
+nsh.prompt("Are you having a nice day? ", function (response) {
+  nsh.echo("So what you're telling me is " + response.trim());
+});
+nsh.run();/* Run the prompts and fire the callbacks */</tt></pre>
+</div></div>
+<div class="paragraph"><p>If you want to group a bunch of tasks together that are fired in a queue (maybe with some prompting). Try this -</p></div>
+<div class="paragraph"><p>putting-the-peices-together.js</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>#!/usr/bin/env node
+nshtools = require('nshtools');
+nsh = nshtools.createNshtool();
+nsh.task("Starting up ...", function () { nsh.echo("Started " + new Date()) } );
+nsh.task("List a directory", function() {
+  nsh.exec("ls -l", function(ls_error, contents) {
+    if (ls_error) {
+      nsh.echo(ls_error);
+      return;
+    }
+    nsh.echo(contents);
+  });
+});
+nsh.prompt("Did you see and tasks fire off? (Y/N) ",function (response) {
+  if (response.toUpperCase().trim() === 'Y') {
+    nsh.echo("Success!");
+  } else {
+    nsh.echo("On no, that's not supposed to happen.");
+  }
+});
+nsh.run();/* IMPORTANT: This needs to be the last thing called! */</tt></pre>
+</div></div>
+<div class="paragraph"><p>Here&#8217;s an example of checking for long options on from the command line.</p></div>
+<div class="paragraph"><p>helloworld-getOption.js</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt>#!/usr/bin/env node
+nshtools = require('nshtools');
+nsh = nshtools.createNshtool();
+nsh.getOption('--helloworld=Me', function(error, value) {
+ if (error) {
+   nsh.echo("Try running this with --helloworld=Me and see what happens.");
+   return;
+ }
+ nsh.echo("Hello " + value);
+});</tt></pre>
+</div></div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 0.0.0x<br />
+Last updated 2010-02-22 12:09:09 PDT
+</div>
+</div>
+</body>
+</html>
