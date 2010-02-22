@@ -1,0 +1,9 @@
+Wish list for nshtools:
+
+* Easy to write prompted interactions
+* Easy to group actions by tasks which are generally sequential
+* A simple getopts like way of processing command line arguments
+* Include just nshtools and get a nice environment to script in
+* NCURSES like features
+* readline like features
+
