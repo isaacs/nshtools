@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 nshtools = require(process.cwd() + '/nshtools');
-sh = nshtools.createShtool();
+sh = nshtools.createNshtool();
 sh.echo("Try some interactive prompting.");
 sh.prompt('Q1? ',function (response) { sh.echo('A1: ' + response) });
 sh.prompt('Q2? ',function (response) { sh.echo('A2: ' + response) });

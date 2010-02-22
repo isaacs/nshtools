@@ -5,8 +5,7 @@
  */
 var sys = require('sys'),
     fs = require('fs'),
-    path = require('path'),
-    assert = require('assert');
+    path = require('path');
 
 /*
  * echo, prompt, run are helpful for creating a simple call
@@ -33,7 +32,7 @@ echo = function (message, nonl) {
  * @param callback - the callback to be run
  */
 prompt = function (message, callback) {
-  this.work_queue.push({'message' : message, 'callback' : callback, qtype : 'prompt'});
+  this.work_queue.push({'message' : message, 'callback' : callback, 'qtype' : 'prompt'});
 };
 
 /**
@@ -42,13 +41,24 @@ prompt = function (message, callback) {
  * @param callback - the callback function fired.
  */
 task = function (label, callback) {
-  this.work_queue.push({'callback' : callback, qtype : 'task'});
+  if (callback === undefined && label === undefiend) {
+    label = 'NoOp';
+    callback = self.NoOp;
+  }
+  if (label === undefined) {
+    label = '';
+  }
+  if (callback === undefined) {
+    label += "\n\tWARNING: no callback defined for label, using NoOp.";
+    callback = self.NoOp;
+  }
+  this.work_queue.push({'label' : label, 'callback' : callback, 'qtype' : 'task'});
 };
 
 /**
- * NOOP - a function that doesn't do anything.
+ * NoOp - a function that doesn't do anything.
  */
-NOOP = function () {};
+NoOp = function () {};
 
 /**
  * Run all the queued prompts and callbacks.
@@ -58,19 +68,23 @@ run = function () {
       need_to_close_stdio = true;
       
   runTasks = function() {
-    var more_tasks, task;
+    var more_tasks, action;
     /* Run through tasks first */
+    more_tasks = false;
     if (self.work_queue.length > 0) {
       more_tasks = true;
     }
     while(more_tasks) {
-     if (self.work_queue[0].qtype === 'task') {
-       task = self.work_queue.shift();
-       sys.puts(task.label);
-       task.callback(); 
-     } else {
-       more_tasks = false;
-     }
+      if (self.work_queue[0].qtype === 'task') {
+        action = self.work_queue.shift();
+        self.echo(action.label);
+        action.callback();
+        if (self.work_queue.length === 0) {
+          more_tasks = false;
+        }
+      } else {
+        more_tasks = false;
+      }
     }
   }
   runTasks();
@@ -78,13 +92,12 @@ run = function () {
   /* If we have tasks left then go into interactive mode */
   if (self.work_queue.length > 0) {
     /* Display the first message in queue. */
-    if (self.work_queue.length > 0) {
-      if (self.work_queue[0].qtype === 'prompt') {
-        sys.print(self.work_queue[0].message);
-      }
+    if (self.work_queue[0].qtype === 'prompt') {
+      self.print(self.work_queue[0].message);
     }
+
     /* If we're running in node-repl we'll throw an error on the
-      since this will be a second open. Ignore. */
+       since this will be a second open. Ignore. */
     try {
       process.stdio.open();
     } catch (err) {
@@ -102,7 +115,7 @@ run = function () {
         /* Prompt for next action. */
         if (self.work_queue.length > 0) {
           if (self.work_queue[0].qtype === 'prompt') {
-            sys.print(self.work_queue[0].message);
+            self.print(self.work_queue[0].message);
           }
         } else {
           process.stdio.close();
@@ -114,9 +127,9 @@ run = function () {
 
 
 /**
- * createShtool - create a new shtools object.
+ * createNshtool - create a new Nshtools object.
  */
-createShtool = function () {
+createNshtool = function () {
   var self = {};
   self.work_queue = [];
   self.verbose = true;
@@ -124,11 +137,11 @@ createShtool = function () {
   self.echo = echo;
   self.prompt = prompt;
   self.task = task;
-  self.NOOP = NOOP;
+  self.NoOp = NoOp;
   self.run = run;
   self.cp = cp;
   self.mv = mv;
-  process.mixin(self, process, sys, fs, path, assert);
+  process.mixin(self, process, sys, fs, path);
   
   return self;
 };
@@ -195,10 +208,10 @@ mv = function (source, target, callback) {
   });
 };
 
-exports.createShtool = createShtool;
+exports.createNshtool = createNshtool;
 exports.echo = echo;
 exports.prompt = prompt;
-exports.NOOP = NOOP;
+exports.NoOp = NoOp;
 exports.run  = run;
 exports.cp = cp;
 exports.mv = mv;
