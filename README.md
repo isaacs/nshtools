@@ -3,15 +3,15 @@ nshtools.js
 R. S. Doiel <rsdoiel@gmail.com>
 Version, 0.0.0x, 2010.02.22
 
-== NAME
+## NAME
 
 nshtools.js - an object for scripting those everyday chores around your operating system. I.E. If I would have used Bash I should be able to do something almost as easily using JavaScript via node.
 
-== SYNPOSIS
+## SYNPOSIS
 
 So you're doing some node programming.  You need to write a quickly installer or monitor. In the past you might have written a shell script that called wget or something.  Why not just use node? Because there isn't the highlevel view of your OS that you get with shell.  nshtools.js seeks to fill in the gap until something official comes along.
 
-=== Examples
+## Examples
 
 copy-tmp-file-example.js
 ----
