@@ -1,9 +1,10 @@
 Wish list for nshtools:
 
-* Support for short style arg parsing
-* Easy to group actions by tasks which are fired sequentially but run asynchronously
-* A simple getopts like way of processing command line arguments
-* Include just nshtools and get a nice environment to script in
-* NCURSES like features
-* readline like features
+* add short style arg parsing to getOption()
+* integrate ncurses like features
+* add readline like features
+* suppport more high level file operations
+** Add a fileGlob() method which gets a list of files based on a regex criteria (e.g. nsh.fileGlob('*.txt', mycallback));
+** Add chmod method and wrapper methods makeWritable(), makeReadable(), makeExecutable()
+
 

@@ -180,45 +180,52 @@ createNshtool = function () {
  */
 
 /**
- * cp = copy a file.
+ * cp - copy a file. All three parameters are required.
+ * @param source - the filename for the copy source
+ * @param target - the filename (not directory name) of the copy target
+ * @param callback - the callback to fire as a result of the copy. If an error occurs
+ * then an error message is passed to the callback. Otherwise no parameters are passed.
  */
 cp = function (source, target, callback) {
   var self = this;
 
   fs.readFile(source, 'binary', function (read_error, content) {
     if (read_error) {
-      sys.error('cp: ' + source + ' ' + target + ': ' + read_error);
+      callback('cp: ' + source + ' ' + target + ': ' + read_error);
       return;
     }
     fs.writeFile(target, content, 'binary', function (write_error) {
       if (write_error) {
-        sys.error('cp: ' + source + ' ' + target + ': ' + write_error);
+        callback('cp: ' + source + ' ' + target + ': ' + write_error);
         return;
       } 
       if (self.verbose) {
         sys.puts(source + " -> " + target);
       }
-      if (callback !== undefined) {
-        callback();
-      }
+      callback(undefined);
     });
   });
 };
 
 /**
- * mv = copy a file.
+ * mv = copy a file to a new one removing the original after completion. 
+ * All three parameters are required.
+ * @param source - the filename for the move source
+ * @param target - the filename (not directory name) of the move target
+ * @param callback - the callback to fire as a result of the move. If an error occurs
+ * then an error message is passed when the callback is fired otherwise no parameters are passed.
  */
 mv = function (source, target, callback) {
   var self = this;
 
   fs.readFile(source, 'binary', function (read_error, content) {
     if (read_error) {
-      sys.error('mv: ' + source + ' ' + target + ': ' + read_error);
+      callback('mv: ' + source + ' ' + target + ': ' + read_error);
       return;
     }
     fs.writeFile(target, content, 'binary', function (write_error) {
       if (write_error) {
-        sys.error('mv: ' + source + ' ' + target + ': ' + write_error);
+        callback('mv: ' + source + ' ' + target + ': ' + write_error);
         return;
       }
       if (self.verbose) {
@@ -226,10 +233,10 @@ mv = function (source, target, callback) {
       }
       fs.unlink(source, function (unlink_error) {
         if (unlink_error) {
-          sys.puts('mv: ' + source + ' ' + target + ': ' + unlink_error);
+          callback('mv: ' + source + ' ' + target + ': ' + unlink_error);
         }
         if (callback !== undefined) {
-          callback();
+          callback(undefined);
         }
       });
     });
