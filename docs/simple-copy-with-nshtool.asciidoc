@@ -3,12 +3,12 @@ simple copy with nshtool
 R. S. Doiel, <rsdoiel@gmail.com>
 version 0.0.1x 2010-02-26
 
-## work queues in nshtools.js
+== work queues in nshtools.js
 
 nshtools.js provides, among other things, a work queue implementation like the one above (see github.com/rsdoiel/[nshtools](http://github.com/rsdoiel/nshtools). Here's an example of using the work queue to copy a file (e.g. helloworld.txt) you've crearted in your local directory to some place else. It's like a simple quick and dirty installer script copying a source file to a destination file -
 
-### copy-helloworld-nshtools.js
-
+copy-helloworld-nshtools.js
+----
    #!/usr/bin/env node
    /* Let's load the nshtools module which includes a work queue */
    nshtools = require('nshtools');
@@ -45,6 +45,7 @@ nshtools.js provides, among other things, a work queue implementation like the o
 Here's an example of the output of running that program.  Remember nshtools.js needs to be installed where node can find it.  helloworld.txt was in the current work directory and I copied it to /tmp/helloworld.txt.
 
 ----
+
     example.com$ node copy-helloworld-nshtools.js
     Where do I find helloworld.txt (e.g. ./helloworld.txt or /tmp/helloworld.txt)? ../helloworld.txt
     What is the destination name? /tmp/helloworld.txt
@@ -52,6 +53,7 @@ Here's an example of the output of running that program.  Remember nshtools.js n
     ./helloworld.txt -> /tmp/helloworld.txt
     Copy made!
     example.com$ ls -l /tmp/helloworld.txt 
-    -rw-r--r-- 1 rsdoiel rsdoiel 29 2010-02-22 21:12 /tmp/helloworld.txt
+    -rw-r--r-- 1 xxxxxxx xxxxxxx 29 2010-02-22 21:12 /tmp/helloworld.txt
+
 ----
 
