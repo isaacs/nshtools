@@ -14,6 +14,12 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  *
  */
+
+/* It's useful to beable to use things in the working directory */
+if (process.paths.indexOf(process.cwd()) < 0) {
+  process.paths.push(process.cwd());
+}
+
 var sys = require('sys'),
     fs = require('fs'),
     path = require('path');
@@ -111,13 +117,6 @@ die = function (message, exit_val) {
   process.exit(exit_val);
 };
 
-/**
- * coma - print something to the console using sys.puts() and return from function.
- */
-coma = function(message, return_val) {
-  sys.puts(message);
-  return return_val;
-};
  
 /**
  * Run all the queued prompts and callbacks.
@@ -184,28 +183,6 @@ run = function () {
   }
 };
 
-
-/**
- * createNshtool - create a new Nshtools object.
- */
-createNshtool = function () {
-  var self = {};
-  self.work_queue = [];
-  self.verbose = true;
-
-  self.version = version;
-  self.echo = echo;
-  self.getOption = getOption;
-  self.prompt = prompt;
-  self.task = task;
-  self.NoOp = NoOp;
-  self.run = run;
-  self.cp = cp;
-  self.mv = mv;
-  process.mixin(self, process, sys, fs, path);
-  
-  return self;
-};
 
 /*
  * Re-create some common Unix style file system primitives. 
@@ -276,6 +253,62 @@ mv = function (source, target, callback) {
   });
 };
 
+/**
+ * globFolder - an overly simple approach to scan a folder for wild carded content.
+ *
+ * I think this will be superceded by a real node module that implements glob().
+ *
+ * @param path - the folder to scan, default path is ".". null, "" and undefined
+ * are translated as ".".
+ * @param wildcards - a string which will get passed to RegExp (e.g. *.txt)
+ * @param callback - the method which will get called when something is found.
+ * two parameters are passed - error, path.
+ */
+globFolder = function (path, wildcards, callback) {
+  if (path === '' || path === null || path === undefined) {
+    path = '.';
+  }
+  fs.readdir(path, function (err, dirs) {
+    if (err) {
+      callback('ERROR: globFolder("' + path + "','" + wildcards + '""): ' + error);
+      return;
+    }
+    re = new RegExp(wildcards);
+    for (i in dirs) {
+      (function (path) {
+        if (path.match(re)) {
+          callback(undefined, path);
+        }
+      })(dirs[i]);
+    }
+  });
+};
+
+/**
+ * createNshtool - create a new Nshtools object with
+ * all the useful mixin stuff from process, sys, fs and path.
+ */
+createNshtool = function () {
+  var self = {};
+  self.work_queue = [];
+  self.verbose = true;
+
+  self.version = version;
+  self.echo = echo;
+  self.getOption = getOption;
+  self.prompt = prompt;
+  self.task = task;
+  self.NoOp = NoOp;
+  self.run = run;
+  self.cp = cp;
+  self.mv = mv;
+  self.die = die;
+  self.globFolder = globFolder;
+  process.mixin(self, process, sys, fs, path);
+  
+  return self;
+};
+
 exports.createNshtool = createNshtool;
 exports.echo = echo;
 exports.getOption = getOption;
@@ -285,5 +318,138 @@ exports.run  = run;
 exports.cp = cp;
 exports.mv = mv;
 exports.die = die;
-exports.coma = coma;
+exports.globFolder = globFolder;
+
+/**
+ * DS - ds or data structures is just what sound likes. A *Simple*
+ * implementation of useful data structures (e.g. Stacks, Queues).
+ * Thought it might be useful to have with nshtools.
+ * 
+ * These should work but don't have good tests for them yet ...
+ * 
+ * Might move out to their own module again in the future,
+ * they came from PhizCode's ds.js
+ */
+var STACK = 1, QUEUE = 2,
+    DS = this.DS = function (dsType) {
+      this.ds = [];
+      if (dsType === undefined) {
+        this.dsType = QUEUE;
+      } else {
+        this.dsType = dsType;  
+      }
+    };
+
+DS.prototype.view = function (pos) {
+  if (this.ds.length === 0) {
+    return;
+  }
+  switch (pos) {
+    case 'top':
+      if (this.dsType === STACK) {
+        pos = this.ds.length - 1;      
+      } else {
+        pos = 0;
+      }
+      break;
+    case 'bottom':
+      if (this.dsType === STACK) {
+        pos = 0;    
+      } else {
+        pos = this.ds.length - 1;            
+      }
+      break;
+  }
+  if (pos < 0) {
+    pos = this.ds.length + pos;
+  }
+  if (pos < 0) {
+    pos = 0;
+  }
+  if (pos >= this.ds.length) {
+    pos = this.ds.length - 1 ;
+  }
+  return this.ds[pos];
+}
+
+DS.prototype.pop = function () { 
+  return this.ds.pop();
+};
+
+DS.prototype.push = function (item) { 
+  return this.ds.push(item); 
+};
+
+DS.prototype.isEmpty = function () { 
+  return (this.ds.length === 0); 
+};
+
+DS.prototype.size = function () { 
+  return (this.ds.length); 
+};
+
+DS.prototype.top = function () {
+  if (this.ds.length > 0) {
+    if (this.dsType === QUEUE) {
+      return this.ds[0];
+    }
+    return this.ds[this.ds.length - 1];   
+  }
+  return;
+};
+
+DS.prototype.bottom = function () {
+  if (this.ds.length > 0) {
+    if (this.dsType === QUEUE) {
+      return this.ds[this.ds.length - 1];    
+    }
+    return this.ds[0];
+  }
+  return;
+};
+
+DS.prototype.popAll = function () {
+  if (this.ds.length > 0) {
+    /* Pop implies STACK/FILO so reverse array */
+    this.ds.reverse();
+    var s = this.ds;
+
+    delete this.ds;
+    this.ds = [];
+    return s;
+  }
+  return;
+};
+
+DS.prototype.shift = function () { 
+  return this.ds.shift();
+};
+
+DS.prototype.shiftAll = function () {
+  if (this.ds.length > 0) {
+    var q = this.ds;
+
+    delete this.ds;
+    this.ds = [];
+    return q;
+  }
+  return;
+};
+
+
+exports.STACK = STACK;
+exports.QUEUE = QUEUE;
+exports.DS = this.DS;
+exports.DS.prototype = this.DS.prototype;
+exports.DS.prototype.version = DS.version;
+exports.DS.prototype.view = DS.prototype.view;
+exports.DS.prototype.push = DS.prototype.push;
+exports.DS.prototype.shift = DS.prototype.shift;
+exports.DS.prototype.pop = DS.prototype.pop;
+exports.DS.prototype.isEmpty = DS.prototype.isEmpty;
+exports.DS.prototype.size = DS.prototype.size;
+exports.DS.prototype.top = DS.prototype.top;
+exports.DS.prototype.bottom = DS.prototype.bottom;
+exports.DS.prototype.popAll = DS.prototype.popAll;
+exports.DS.prototype.shiftAll = DS.prototype.shiftAll;
 
