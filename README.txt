@@ -1,7 +1,11 @@
 nshtools.js
 ===========
 R. S. Doiel <rsdoiel@gmail.com>
-Version, 0.0.0x, 2010.02.23
+Version, 0.0.1x, 2010.02.26
+
+copyright (c) 2010, R. S. Doiel, all rights reserved
+
+Licensed under "The BSD License" described at http://opensource.org/licenses/bsd-license.php
 
 == NAME
 
@@ -19,7 +23,7 @@ It also supports two simple data structures with the DS object. I.e. nshtools.ST
 
 == Examples
 
-copy-tmp-file.js
+link:examples/copy-tmp-file.js[copy-tmp-file.js]
 ----
 
     #!/usr/bin/env node
@@ -38,7 +42,7 @@ copy-tmp-file.js
 Sometimes you need to find out from the client an answer to a question before carrying out an action.  That's what
 run() and prompt() are for.
 
-get-some-user-responses.js
+link:examples/get-some-user-responses.js[get-some-user-responses.js]
 ----
 
     #!/usr/bin/env node
@@ -56,7 +60,7 @@ get-some-user-responses.js
 
 If you want to group a bunch of tasks together that are fired in a queue (maybe with some prompting). Try this -
 
-putting-the-pieces-together.js
+link:examples/putting-the-pieces-together.js[putting-the-pieces-together.js]
 ----
 
     #!/usr/bin/env node
@@ -85,7 +89,7 @@ putting-the-pieces-together.js
 
 Here's an example of checking for long options on from the command line.
 
-hello-getOption.js
+link:examples/hello-getOption.js[hello-getOption.js]
 ----
 
     #!/usr/bin/env node
@@ -105,7 +109,7 @@ hello-getOption.js
 
 All the file related methods expect trailing parameter for the callback. If you don't want to include a callback then you can either use an empty anonymous method (e.g. function (){}) or use the NoOp method that does that for you.
 
-noop-with-getOption.js
+link:examples/noop-with-getOption.js[noop-with-getOption.js]
 ----
 
     #!/usr/bin/env node
@@ -122,7 +126,7 @@ It makes more sense for file operations where you're not going to use the outcom
 
 A simple build script that looks for .txt files and uses AsciiDoc to render them as html.
 
-build.js
+link:build.js[build.js]
 ----
 
     #!/usr/bin/env node

@@ -20,7 +20,8 @@ var nshtools = require('nshtools'),
       nsh.die(error);
     }
     if (filename === "README.txt") {
-      nsh.cp("README.txt","README.md", nsh.NoOp);
+      /* FIXME: need an easy way to convert AsciiDoc to Markdown for github project page.
+      nsh.cp("README.txt","README.md", nsh.NoOp); */
       filename = "--out-file=index.html README.txt";
     }
     nsh.exec('asciidoc --verbose ' + filename, function (error, stdout, stderr) {

@@ -1,13 +1,18 @@
-nshtools.js
-===========
-R. S. Doiel <rsdoiel@gmail.com>
-Version, 0.0.0x, 2010.02.23
+Title: nshtools.js
+Author: R. S. Doiel <rsdoiel@gmail.com>
+Version: 0.0.0x, 2010.02.23
 
-== NAME
+copyright (c) 2010, R. S. Doiel, all rights reserved
+
+Licensed under "The BSD License" described at [Open Source Initiative](http://opensource.org/licenses/bsd-license.php)
+
+----------------------------------------
+
+## NAME
 
 nshtools.js - an module for scripting those everyday chores around your operating system. E.g. If it was easy to script in Bash it should be easy to script in JavaScript via node.
 
-== SYNPOSIS
+## SYNPOSIS
 
 nshtools allows the creation of an object that supports
 
@@ -17,9 +22,9 @@ nshtools allows the creation of an object that supports
 
 It also supports two simple data structures with the DS object. I.e. nshtools.STACK and nshtools.QUEUE.
 
-== Examples
+## Examples
 
-copy-tmp-file.js
+[copy-tmp-file.js](examples/copy-tmp-file.js)
 ----
 
     #!/usr/bin/env node
@@ -38,7 +43,7 @@ copy-tmp-file.js
 Sometimes you need to find out from the client an answer to a question before carrying out an action.  That's what
 run() and prompt() are for.
 
-get-some-user-responses.js
+[get-some-user-responses.js](examples/get-some-user-responses.js)
 ----
 
     #!/usr/bin/env node
@@ -56,7 +61,7 @@ get-some-user-responses.js
 
 If you want to group a bunch of tasks together that are fired in a queue (maybe with some prompting). Try this -
 
-putting-the-pieces-together.js
+[putting-the-pieces-together.js](examples/putting-the-pieces-together.js)
 ----
 
     #!/usr/bin/env node
@@ -73,7 +78,7 @@ putting-the-pieces-together.js
       });
     });
     nsh.prompt("Did you see and tasks fire off? (Y/N) ", function (response) {
-      if (response.toUpperCase().trim() === 'Y') {
+      if (response.toUpperCase().trim() ### 'Y') {
         nsh.echo("Success!");
       } else {
         nsh.echo("On no, that's not supposed to happen.");
@@ -85,7 +90,7 @@ putting-the-pieces-together.js
 
 Here's an example of checking for long options on from the command line.
 
-hello-getOption.js
+[hello-getOption.js](examples/hello-getOption.js)
 ----
 
     #!/usr/bin/env node
@@ -101,11 +106,11 @@ hello-getOption.js
 
 ----
 
-=== NoOp
+### NoOp
 
 All the file related methods expect trailing parameter for the callback. If you don't want to include a callback then you can either use an empty anonymous method (e.g. function (){}) or use the NoOp method that does that for you.
 
-noop-with-getOption.js
+[noop-with-getOption.js](examples/noop-with-getOption.js)
 ----
 
     #!/usr/bin/env node
@@ -118,11 +123,11 @@ noop-with-getOption.js
 
 It makes more sense for file operations where you're not going to use the outcome (e.g. `nsh.cp('file1.txt','file2.txt', nsh.NoOp)`).
 
-=== build.js
+### build.js
 
 A simple build script that looks for .txt files and uses AsciiDoc to render them as html.
 
-build.js
+[build.js](build.js)
 ----
 
     #!/usr/bin/env node
@@ -146,7 +151,7 @@ build.js
         if (error) {
           nsh.die(error);
         }
-        if (filename === "README.txt") {
+        if (filename ### "README.txt") {
           nsh.cp("README.txt","README.md", nsh.NoOp);
           filename = "--out-file=index.html README.txt";
         }

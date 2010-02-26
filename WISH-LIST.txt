@@ -1,10 +1,7 @@
 Wish list for nshtools:
 
 * add short style arg parsing to getOption()
-* integrate ncurses like features
-* add readline like features
 * suppport more high level file operations
-** Add a fileGlob() method which gets a list of files based on a regex criteria (e.g. nsh.fileGlob('*.txt', mycallback));
 ** Add chmod method and wrapper methods makeWritable(), makeReadable(), makeExecutable()
 
 
