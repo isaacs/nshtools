@@ -18,7 +18,7 @@ var sys = require('sys'),
     fs = require('fs'),
     path = require('path');
 
-version = '0.0.0x 2010.02.23';
+version = '0.0.0x 2010.02.26';
 
 /*
  * echo, prompt, run are helpful for creating a simple call
@@ -100,6 +100,25 @@ task = function (label, callback) {
  */
 NoOp = function () {};
 
+/**
+ * die - print something to the console using sys.error() and exit the process
+ */
+die = function (message, exit_val) {
+  if (exit_val === undefined) {
+    exit_val = 1;
+  }
+  sys.error(message);
+  process.exit(exit_val);
+};
+
+/**
+ * coma - print something to the console using sys.puts() and return from function.
+ */
+coma = function(message, return_val) {
+  sys.puts(message);
+  return return_val;
+};
+ 
 /**
  * Run all the queued prompts and callbacks.
  */
@@ -265,4 +284,6 @@ exports.NoOp = NoOp;
 exports.run  = run;
 exports.cp = cp;
 exports.mv = mv;
+exports.die = die;
+exports.coma = coma;
 
