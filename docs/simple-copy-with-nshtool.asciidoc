@@ -5,7 +5,7 @@ version 0.0.1x 2010-02-26
 
 == work queues in nshtools.js
 
-nshtools.js provides, among other things, a work queue implementation like the one above (see github.com/rsdoiel/[nshtools](http://github.com/rsdoiel/nshtools). Here's an example of using the work queue to copy a file (e.g. helloworld.txt) you've crearted in your local directory to some place else. It's like a simple quick and dirty installer script copying a source file to a destination file -
+nshtools.js provides, among other things, a work queue implementation like the one above http://github.com/rsdoiel/nshtools. Here's an example of using the work queue to copy a file (e.g. helloworld.txt) you've crearted in your local directory to some place else. It's like a simple quick and dirty installer script copying a source file to a destination file -
 
 copy-helloworld-nshtools.js
 ----
