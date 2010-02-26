@@ -15,6 +15,21 @@ var nshtools = require('nshtools'),
 
 /* Main script body */
 (function () {
+  nsh.stat('README', function (err, stat) {
+    if (err) {
+      /* README is probably called README.txt or README.md, skip it. */
+      return;
+    }
+    nsh.exec("asciidoc --verbose --out-file=index.html README", function (error, stdout, stderr) {
+      if (error) {
+        nsh.echo("Problem converting " + filename + " html");
+        nsh.echo(stderr)
+        nsh.die(error);
+      }
+      nsh.echo(stderr)
+      nsh.echo(stdout);
+     });
+  });
   nsh.globFolder('.', '.txt$', function (error, filename) {
     if (error) {
       nsh.die(error);
