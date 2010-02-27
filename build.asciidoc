@@ -1,0 +1,29 @@
+build.js
+========
+R. S. Doiel <rsdoiel@gmail.com>
+Version, 0.0.1x, 2010.02.27
+
+copyright (c) 2010, R. S. Doiel, all rights reserved
+
+Licensed under "The BSD License" described at http://opensource.org/licenses/bsd-license.php
+
+== NAME
+
+build.js - an example build script using nshtools used to build web page documentation for this project.  This will generate some HTML pages for reference.
+        
+== REQUIREMENTS
+
+* node >= 1.30 footnote:[see link:http://nodejs.org[nodejs.org] for details.]
+* asciidoc >= 8 footnote:[see link:http://http://www.methods.co.nz/asciidoc/[asciidoc] for details.]
+* nshtools footnote:[see link:README.asciidoc[README.asciidoc] and link:INSTALL.asciidoc[INSTALL.asciidoc] for details]
+
+== SYNPOSIS
+
+build.js looks for files ending in .asciidoc and invokes asciidoc to turn them into web pages.
+
+== Examples
+
+.basic
+----
+node build.js
+----

@@ -1,0 +1,44 @@
+INSTALL
+=======
+R. S. Doiel <rsdoiel@gmail.com>
+Version, 0.0.1x, 2010.02.26
+
+copyright (c) 2010, R. S. Doiel, all rights reserved
+
+Licensed under "The BSD License" described at http://opensource.org/licenses/bsd-license.php
+
+== OVERVIEW
+
+link:README.html[nshtools] is a NodeJS module and example program called link:syncme.html[syncme.js]. 
+
+== REQUIREMENTS
+
+* node >= 1.30 footnote:[see link:http://nodejs.org[nodejs.org] for details.]
+* git footnote:[see link:http://git-scm.com/[git-scm.com] for details]
+
+== INSTALLING
+
+nshtools comes with a simple installer. This is a simple installer written using nshtools.js to install nshtools.js module and syncme.js. It has one option.
+
+--Prefix::
+        The prefix of where you want things installed.
+
+nshtools needs to have node already installed. See link:http://nodejs.org[http://nodejs.org] for details. 
+
+.simple install
+----
+node install-nshtools.js
+----
+
+.local install (i.e. /usr/local)
+----
+node install-nshtools.js --prefix=/usr/local
+----
+
+== GORY DETAILS
+
+Typically node modules live in two place /usr/local/lib/node/libraries or $HOME/.node_libraries. If you write your own module or download someone elses and don't want to play with `process.paths` you wind up coping that module to where the rest of the modules live.  Likewise if you've written an application you wind up copying it to a "bin" folder on many Unix systems. install-nshtools.js does this for you based on the prefix path.
+
+The default prefix path is your local home directory. The installer will fail if the directories don't exists. That is one of the ways it is simple.
+
+NOTE: $HOME/bin for syncme.js and $HOME/.node_libraries for nshtools.js, otherwise nshtools is put in $PREFIX/lib/node/libraries.

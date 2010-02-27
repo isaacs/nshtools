@@ -268,9 +268,9 @@ globFolder = function (path, wildcards, callback) {
   if (path === '' || path === null || path === undefined) {
     path = '.';
   }
-  fs.readdir(path, function (err, dirs) {
-    if (err) {
-      callback('ERROR: globFolder("' + path + "','" + wildcards + '""): ' + error);
+  fs.readdir(path, function (error, dirs) {
+    if (error) {
+      callback('ERROR: globFolder("' + path + "','" + wildcards + "'): " + error);
       return;
     }
     re = new RegExp(wildcards);

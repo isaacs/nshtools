@@ -28,15 +28,15 @@ var nsh = require('nshtools').createNshtool();
       nsh.echo(stdout);
      });
   });
-  nsh.globFolder('.', '.txt$', function (error, filename) {
+  nsh.globFolder('.', '.asciidoc$', function (error, filename) {
     if (error) {
       nsh.die(error);
     }
-    if (filename === "README.txt") {
-      /* FIXME: need an easy way to convert AsciiDoc to Markdown for github project page.
-      nsh.cp("README.txt","README.md", nsh.NoOp); */
-      filename = "--out-file=index.html README.txt";
+    /*
+    if (filename === "README.asciidoc") {
+      filename = "--out-file=index.html README.asciidoc";
     }
+    */
     nsh.exec('asciidoc --verbose ' + filename, function (error, stdout, stderr) {
       if (error) {
         nsh.echo("Problem converting " + filename + " html");
@@ -48,9 +48,10 @@ var nsh = require('nshtools').createNshtool();
     });
   });
 
-  nsh.globFolder('docs', '.txt$', function (error, filename) {
+  nsh.globFolder('docs', '.asciidoc$', function (error, filename) {
     if (error) {
-      nsh.die(error);
+      // docs doesn't exist so skip it.
+      return; // nsh.die(error);
     }
     
     nsh.exec('asciidoc --verbose ' + 'docs/' + filename, function (error, stdout, stderr) {
