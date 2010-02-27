@@ -1,15 +1,11 @@
-syncme.js
-=========
+syncme.js(1)
+============
 R. S. Doiel, <rsdoiel@gmail.com>
 version 0.0.0x 2010.02.27
 
 == NAME
 
 syncme.js - utility to do a git-pull on a list of cloned repositories
-
-== USAGE
-
-syncme.js [options]
 
 == SYNOPSIS
 

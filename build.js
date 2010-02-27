@@ -11,47 +11,45 @@ if(process.paths.indexOf(process.cwd()) < 0) {
 
 var nsh = require('nshtools').createNshtool();
 
+ABOUT = "NAME\n" +
+"\nbuild.js - generate HTML pages for nshtools\n\n" +
+"SYNPOSIS\n\n" +
+"build.js looks for files ending in .asciidoc and invokes asciidoc to turn them into web pages.\n\n" +
+"EXAMPLES\n\n" +
+"build.js is simple.\n" +
+"\n\tnode build.js\n\n";
+
+
+
+nsh.getOption('--help', function(option_error, arg) {
+  if (option_error) {
+    /* don't need help. */
+    return;
+  }
+  nsh.die(ABOUT,0);
+});
+
 /* Main script body */
 (function () {
-  nsh.stat('README', function (err, stat) {
-    if (err) {
-      /* README is probably called README.txt or README.md, skip it. */
-      return;
-    }
-    nsh.exec("asciidoc --verbose --out-file=index.html README", function (error, stdout, stderr) {
-      if (error) {
-        nsh.echo("Problem converting " + filename + " html");
-        nsh.echo(stderr)
-        nsh.die(error);
-      }
-      nsh.echo(stderr)
-      nsh.echo(stdout);
-     });
-  });
   nsh.globFolder('.', '.asciidoc$', function (error, filename) {
     if (error) {
       nsh.die(error);
     }
-    /*
-    if (filename === "README.asciidoc") {
-      filename = "--out-file=index.html README.asciidoc";
-    }
-    */
-    nsh.exec('asciidoc --verbose ' + filename, function (error, stdout, stderr) {
+    nsh.exec('asciidoc ' + filename, function (error, stdout, stderr) {
       if (error) {
         nsh.echo("Problem converting " + filename + " html");
         nsh.echo(stderr)
         nsh.die(error);
       }
       nsh.echo(stderr)
-      nsh.echo(stdout);
+      nsh.echo("Processed " + filename);
     });
   });
 
   nsh.globFolder('docs', '.asciidoc$', function (error, filename) {
     if (error) {
       // docs doesn't exist so skip it.
-      return; // nsh.die(error);
+      return;
     }
     
     nsh.exec('asciidoc --verbose ' + 'docs/' + filename, function (error, stdout, stderr) {
