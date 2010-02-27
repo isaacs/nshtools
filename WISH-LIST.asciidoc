@@ -1,4 +1,9 @@
-Wish list for nshtools:
+Wish list
+=========
+R. S. Doiel, <rsdoiel@gmail.com>
+version 0.0.1x 2010.02.27
+
+== Wish list for nshtools:
 
 * add short style arg parsing to getOption()
 * suppport more high level file operations
