@@ -9,7 +9,7 @@ Licensed under "The BSD License" described at http://opensource.org/licenses/bsd
 
 == OVERVIEW
 
-link:README[nshtools] is a NodeJS module and example program called link:syncme[syncme.js]. 
+link:README.asciidoc[nshtools] is a NodeJS module and example program called link:syncme.asciidoc[syncme.js]. 
 
 == REQUIREMENTS
 
