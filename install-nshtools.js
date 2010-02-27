@@ -17,40 +17,39 @@ nsh.getOption('--prefix', function(prefix_error, prefix_path) {
 nsh.prompt("Do you want to install nshtools.js in " + nsh.prefix_path + nsh.node_lib + "? (Y/N) ",
 function (response) {
   if (response.toUpperCase().trim() === 'Y') {
-    nsh.verbose = true;
-    nsh.echo("\n\n\tInstalling ..." + new Date());
+    nsh.verbose = false;
+    nsh.echo("\n\n\tInstalling ..." + new Date() + "\n");
     nsh.cp("nshtools.js", nsh.prefix_path + nsh.node_lib + '/nshtools.js', function (cp_error) {
       if (cp_error) {
-        nsh.echo("Install failed. " + cp_error);
-        return;
+        nsh.die("Install failed. " + cp_error + "\n");
       }
-      nsh.echo("Install complete. " + new Date());
+      nsh.echo("\nnshtools install complete. " + new Date() + "\n");
     });
   } else {
-    nsh.echo("\n\n\tNo action taken. Nothing installed. " + new Date());
+    nsh.echo("\n\n\tNo action taken. Nothing installed. " + new Date() + "\n");
   }
 });
 nsh.prompt("Do you want to install syncme.js in " + nsh.prefix_path +
 nsh.bin_path + "? (Y/N) ",
 function(response) {
   if (response.toUpperCase().trim() === 'Y') {
-    nsh.verbose = true;
-    nsh.echo("\n\n\tInstalling ..." + new Date());
+    nsh.verbose = false;
+    nsh.echo("\n\n\tInstalling ..." + new Date() + "\n");
     nsh.cp("syncme.js", nsh.prefix_path + nsh.bin_path + '/syncme.js', function (cp_error) {
       if (cp_error) {
-        nsh.echo("Install failed. " + cp_error);
+        nsh.echo("Install failed. " + cp_error + "\n");
         return;
       }
       nsh.chmod(nsh.prefix_path + nsh.bin_path + '/syncme.js', 0775, function(error) {
         if (error) {
-          nsh.die("ERROR: installing syncme.js: " + error);
+          nsh.die("ERROR: installing syncme.js: " + error + "\n");
         }
-        nsh.echo("syncme.js made executable.");
+        nsh.echo("syncme.js made executable." + "\n");
       });
-      nsh.echo("Install complete. " + new Date());
+      nsh.echo("\nsyncme.js install complete. " + new Date() + "\n");
     });
   } else {
-    nsh.echo("\n\n\tNo action taken. Nothing installed. " + new Date());
+    nsh.echo("\n\n\tNo action taken. Nothing installed. " + new Date() + "\n");
   }
 });
 nsh.run();

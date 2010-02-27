@@ -7,13 +7,13 @@
  */
 (function () {
   var nsh = require('nshtools').createNshtool(),
-      syncme_conf = nsh.env.HOME + '/.syncme',
+      syncme_conf = nsh.env.HOME + '/.syncme.json',
       TrackedRepos = {},
       ABOUT = "NAME\n" +
   "\tsyncme.js - utility to do a git-pull on a list of cloned repositories\n" +
   "\nSYNOPSIS\n\n" +
-  "syncme.js is an example script that reads $HOME/.syncme to get a list of git\n" +
-  "repos and do a git pull to update the local contents.  If $HOME/.syncme\n" +
+  "syncme.js is an example script that reads $HOME/.syncme.json to get a list of git\n" +
+  "repos and do a git pull to update the local contents.  If $HOME/.syncme.json\n" +
   "doesn't exist it will try to create an empty one. You edit syncme's\n" +
   "configuration with syncme. There are four basic options.\n\n" +
   "\t--add=NICKNAME:PATH\n" +
@@ -29,7 +29,7 @@
   "If no options are specified syncme.js assumes the --run option.\n";
   
   
-  /* Before doing anything read in .syncme.conf or create it. */
+  /* Before doing anything read in .syncme.json or create it. */
   nsh.getOption('--help', function(help_error, arg) {
     if (help_error) {
       /* Help not requested so skip */
@@ -74,13 +74,10 @@
         }
       });      
     });
-    nsh.getOption('--remove', function (option_error, value) {
+    nsh.getOption('--remove', function (option_error, arg) {
       if (option_error) {
         /* Add option not selected, skip */
         return;
-      }
-      if (arg.indexOf(':') < 0) {
-        nsh.die(ABOUT + "ERROR: You need to specify a nickname and path separated by a colon", 1);
       }
       nsh.echo("Removed " + arg);
       if (TrackedRepos[arg] === undefined) {
@@ -116,8 +113,8 @@
               if (error) {
                 nsh.die("ERROR: syncme.js: cd " + path + ";git pull\n" + error);
               }
-              nsh.echo(stdout);
-              nsh.echo(stderr);
+              nsh.echo(path + ": " + stdout);
+              nsh.echo(path + ": " + stderr);
             });
           });
         })(i,TrackedRepos[i]);
