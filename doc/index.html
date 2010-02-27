@@ -48,7 +48,7 @@ var sys = require('sys'),
    http = require('http');
 http.createServer(function (req, res) {
   setTimeout(function () {
-    res.writeHeader(200, {'Content-Type': 'text/plain'});
+    res.writeHead(200, {'Content-Type': 'text/plain'});
     res.write('Hello World');
     res.close();
   }, 2000);
@@ -98,8 +98,8 @@ server.listen(7000, "localhost");</pre>
         <a href="http://github.com/ry/node/tree/master">git repo</a>
       </p>
       <p>
-        2010.02.17
-        <a href="http://nodejs.org/dist/node-v0.1.29.tar.gz">node-v0.1.29.tar.gz</a>
+        2010.02.22
+        <a href="http://nodejs.org/dist/node-v0.1.30.tar.gz">node-v0.1.30.tar.gz</a>
       </p>
 
       <h2 id="build">Build</h2>

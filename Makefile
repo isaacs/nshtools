@@ -24,6 +24,15 @@ test-all: all
 test-debug: all
 	python tools/test.py --mode=debug
 
+test-simple: all
+	python tools/test.py simple
+     
+test-pummel: all
+	python tools/test.py pummel
+	
+test-internet: all
+	python tools/test.py internet
+
 benchmark: all
 	build/default/node benchmark/run.js
 
@@ -52,7 +61,7 @@ website-upload: doc
 	scp doc/* ryan@nodejs.org:~/tinyclouds/node/
 
 docclean:
-	@-rm -f doc/node.1 doc/api.xml doc/api.html
+	@-rm -f doc/node.1 doc/api.xml doc/api.html doc/changelog.html
 
 clean: docclean
 	@$(WAF) clean

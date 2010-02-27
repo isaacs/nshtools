@@ -1,0 +1,52 @@
+syncme.js
+=========
+R. S. Doiel, <rsdoiel@gmail.com>
+version 0.0.0x 2010.02.27
+
+== NAME
+
+syncme.js - utility to do a git-pull on a list of cloned repositories
+
+== SYNOPSIS
+
+syncme.js is an example script that reads $HOME/.syncme to get a list of git repos and do a git pull to update the local contents.  If $HOME/.syncme doesn't exist it will try to create an empty one. You edit syncme's configuration with syncme. There are four basic options.
+
+--add=NICKNAME:PATH::
+        Add a nickname and git repository clone's path to syncme
+        
+--remove=NICKNAME::
+        Remove a nickname and it's path from syncme
+
+--view::
+        View a list of nicknames and paths syncme knows about
+        
+--run::
+        Run git pull in all the locations tha syncme knows about
+
+At this time syncme.js only does a git pull. You still need to use git for doing real interaction with repository.
+
+== EXAMPLES
+
+.adding $HOME/git-clones/node with nickname node
+----
+syncme.js --add=node:$HOME/git-clones/node
+----
+
+
+.viewing nickname and paths tracked by syncme
+----
+syncme.js --view
+----
+
+.running a sync
+----
+syncme.js --run
+----
+
+.removing nickname node
+----
+syncme.js --remove=node
+----
+
+
+

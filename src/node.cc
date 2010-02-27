@@ -62,6 +62,8 @@ static Persistent<String> emit_symbol;
 
 static int option_end_index = 0;
 static bool use_debug_agent = false;
+static bool debug_wait_connect = false;
+static int debug_port=5858;
 
 
 static ev_async eio_want_poll_notifier;
@@ -78,7 +80,7 @@ static ev_timer  gc_timer;
 static void GCTimeout(EV_P_ ev_timer *watcher, int revents) {
   assert(watcher == &gc_timer);
   assert(revents == EV_TIMER);
-  if (ev_pending_count() == 0) V8::IdleNotification();
+  if (ev_pending_count(EV_DEFAULT_UC) == 0) V8::IdleNotification();
 }
 
 
@@ -168,7 +170,7 @@ enum encoding ParseEncoding(Handle<Value> encoding_v, enum encoding _default) {
 Local<Value> Encode(const void *buf, size_t len, enum encoding encoding) {
   HandleScope scope;
 
-  if (!len) return scope.Close(Null());
+  if (!len) return scope.Close(String::Empty());
 
   if (encoding == BINARY) {
     const unsigned char *cbuf = static_cast<const unsigned char*>(buf);
@@ -486,6 +488,29 @@ static Handle<Value> GetUid(const Arguments& args) {
   return scope.Close(Integer::New(uid));
 }
 
+static Handle<Value> GetGid(const Arguments& args) {
+  HandleScope scope;
+  int gid = getgid();
+  return scope.Close(Integer::New(gid));
+}
+
+
+static Handle<Value> SetGid(const Arguments& args) {
+  HandleScope scope;
+  
+  if (args.Length() < 1) {
+    return ThrowException(Exception::Error(
+	  String::New("setgid requires 1 argument")));
+  }
+
+  Local<Integer> given_gid = args[0]->ToInteger();
+  int gid = given_gid->Int32Value();
+  int result;
+  if ((result == setgid(gid)) != 0) {
+    return ThrowException(Exception::Error(String::New(strerror(errno))));
+  }
+  return Undefined();
+}
 
 static Handle<Value> SetUid(const Arguments& args) {
   HandleScope scope;
@@ -909,6 +934,7 @@ void FatalException(TryCatch &try_catch) {
 
 
 static ev_async debug_watcher;
+volatile static bool debugger_msg_pending = false;
 
 static void DebugMessageCallback(EV_P_ ev_async *watcher, int revents) {
   HandleScope scope;
@@ -923,7 +949,47 @@ static void DebugMessageDispatch(void) {
 
   // Send a signal to our main thread saying that it should enter V8 to
   // handle the message.
+  debugger_msg_pending = true;
   ev_async_send(EV_DEFAULT_UC_ &debug_watcher);
+}
+
+static Handle<Value> CheckBreak(const Arguments& args) {
+  HandleScope scope;
+
+  // TODO FIXME This function is a hack to wait until V8 is ready to accept
+  // commands. There seems to be a bug in EnableAgent( _ , _ , true) which
+  // makes it unusable here. Ideally we'd be able to bind EnableAgent and
+  // get it to halt until Eclipse connects.
+
+  if (!debug_wait_connect)
+    return Undefined();
+
+  printf("Waiting for remote debugger connection...\n");
+
+  const int halfSecond = 50;
+  const int tenMs=10000;
+  debugger_msg_pending = false;
+  for (;;) {
+    if (debugger_msg_pending) {
+      Debug::DebugBreak();
+      Debug::ProcessDebugMessages();
+      debugger_msg_pending = false;
+
+      // wait for 500 msec of silence from remote debugger
+      int cnt = halfSecond;
+        while (cnt --) {
+        debugger_msg_pending = false;
+        usleep(tenMs);
+        if (debugger_msg_pending) {
+          debugger_msg_pending = false;
+          cnt = halfSecond;
+        }
+      }
+      break;
+    }
+    usleep(tenMs);
+  }
+  return Undefined();
 }
 
 
@@ -991,10 +1057,15 @@ static void Load(int argc, char *argv[]) {
   NODE_SET_METHOD(process, "cwd", Cwd);
   NODE_SET_METHOD(process, "getuid", GetUid);
   NODE_SET_METHOD(process, "setuid", SetUid);
+
+  NODE_SET_METHOD(process, "setgid", SetGid);
+  NODE_SET_METHOD(process, "getgid", GetGid);
+
   NODE_SET_METHOD(process, "umask", Umask);
   NODE_SET_METHOD(process, "dlopen", DLOpen);
   NODE_SET_METHOD(process, "kill", Kill);
   NODE_SET_METHOD(process, "memoryUsage", MemoryUsage);
+  NODE_SET_METHOD(process, "checkBreak", CheckBreak);
 
   // Assign the EventEmitter. It was created in main().
   process->Set(String::NewSymbol("EventEmitter"),
@@ -1067,6 +1138,7 @@ static void Load(int argc, char *argv[]) {
   // Node's I/O bindings may want to replace 'f' with their own function.
 
   Local<Value> args[1] = { Local<Value>::New(process) };
+
   f->Call(global, 1, args);
 
 #ifndef NDEBUG
@@ -1077,12 +1149,44 @@ static void Load(int argc, char *argv[]) {
 #endif
 }
 
+static void PrintHelp();
+
+static void ParseDebugOpt(const char* arg) {
+  const char *p = 0;
+
+  use_debug_agent = true;
+  if (!strcmp (arg, "--debug-brk")) {
+    debug_wait_connect = true;
+    return;
+  } else if (!strcmp(arg, "--debug")) {
+    return;
+  } else if (strstr(arg, "--debug-brk=") == arg) {
+    debug_wait_connect = true;
+    p = 1 + strchr(arg, '=');
+    debug_port = atoi(p);
+  } else if (strstr(arg, "--debug=") == arg) {
+    p = 1 + strchr(arg, '=');
+    debug_port = atoi(p);
+  }
+  if (p && debug_port > 1024 && debug_port <  65536)
+      return;
+
+  fprintf(stderr, "Bad debug option.\n");
+  if (p) fprintf(stderr, "Debug port must be in range 1025 to 65535.\n");
+
+  PrintHelp();
+  exit(1);
+}
+
 static void PrintHelp() {
   printf("Usage: node [options] script.js [arguments] \n"
-         "  -v, --version    print node's version\n"
-         "  --debug          enable remote debugging\n" // TODO specify port
-         "  --cflags         print pre-processor and compiler flags\n"
-         "  --v8-options     print v8 command line options\n\n"
+         "  -v, --version      print node's version\n"
+         "  --debug[=port]     enable remote debugging via given TCP port\n"
+         "                     without stopping the execution\n"
+         "  --debug-brk[=port] as above, but break in script.js and\n"
+         "                     wait for remote debugger to connect\n"
+         "  --cflags           print pre-processor and compiler flags\n"
+         "  --v8-options       print v8 command line options\n\n"
          "Documentation can be found at http://nodejs.org/api.html"
          " or with 'man node'\n");
 }
@@ -1092,9 +1196,9 @@ static void ParseArgs(int *argc, char **argv) {
   // TODO use parse opts
   for (int i = 1; i < *argc; i++) {
     const char *arg = argv[i];
-    if (strcmp(arg, "--debug") == 0) {
-      argv[i] = reinterpret_cast<const char*>("");
-      use_debug_agent = true;
+    if (strstr(arg, "--debug") == arg) {
+      ParseDebugOpt(arg);
+      argv[i] = const_cast<char*>("");
       option_end_index = i;
     } else if (strcmp(arg, "--version") == 0 || strcmp(arg, "-v") == 0) {
       printf("%s\n", NODE_VERSION);
@@ -1106,7 +1210,7 @@ static void ParseArgs(int *argc, char **argv) {
       PrintHelp();
       exit(0);
     } else if (strcmp(arg, "--v8-options") == 0) {
-      argv[i] = reinterpret_cast<const char*>("--help");
+      argv[i] = const_cast<char*>("--help");
       option_end_index = i+1;
     } else if (argv[i][0] != '-') {
       option_end_index = i-1;
@@ -1191,12 +1295,12 @@ int main(int argc, char *argv[]) {
     ev_unref(EV_DEFAULT_UC);
 
     // Start the debug thread and it's associated TCP server on port 5858.
-    bool r = Debug::EnableAgent("node " NODE_VERSION, 5858);
+    bool r = Debug::EnableAgent("node " NODE_VERSION, node::debug_port);
+
     // Crappy check that everything went well. FIXME
     assert(r);
-    // Print out some information. REMOVEME
-    printf("debugger listening on port 5858\n"
-           "Use 'd8 --remote_debugger' to access it.\n");
+    // Print out some information.
+    printf("debugger listening on port %d\n", node::debug_port);
   }
 
   // Create the one and only Context.

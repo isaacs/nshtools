@@ -135,18 +135,20 @@ process.mixin = function() {
         var d = Object.getOwnPropertyDescriptor(source, k);
         if (d.get) {
           target.__defineGetter__(k, d.get);
-          if (d.set)
+          if (d.set) {
             target.__defineSetter__(k, d.set);
+          }
         }
         else {
           // Prevent never-ending loop
-          if (target === d.value)
+          if (target === d.value) {
             continue;
-          
+          }
+
           if (deep && d.value && typeof d.value === "object") {
             target[k] = process.mixin(deep,
               // Never move original objects, clone them
-              source || (d.value.length != null ? [] : {})
+              source[k] || (d.value.length != null ? [] : {})
             , d.value);
           }
           else {
@@ -480,12 +482,44 @@ var fsModule = createInternalModule("fs", function (exports) {
     return process.fs.readdir(path);
   };
 
+  exports.lstat = function (path, callback) {
+    process.fs.lstat(path, callback || noop);
+  };
+
   exports.stat = function (path, callback) {
     process.fs.stat(path, callback || noop);
   };
 
+  exports.lstatSync = function (path) {
+    return process.fs.lstat(path);
+  };
+
   exports.statSync = function (path) {
     return process.fs.stat(path);
+  };
+
+  exports.readlink = function (path, callback) {
+    process.fs.readlink(path, callback || noop);
+  };
+
+  exports.readlinkSync = function (path) {
+    return process.fs.readlink(path);
+  };
+
+  exports.symlink = function (destination, path, callback) {
+    process.fs.symlink(destination, path, callback || noop);
+  };
+
+  exports.symlinkSync = function (destination, path) {
+    return process.fs.symlink(destination, path);
+  };
+
+  exports.link = function (srcpath, dstpath, callback) {
+    process.fs.link(srcpath, dstpath, callback || noop);
+  };
+
+  exports.linkSync = function (srcpath, dstpath) {
+    return process.fs.link(srcpath, dstpath);
   };
 
   exports.unlink = function (path, callback) {
@@ -520,7 +554,7 @@ var fsModule = createInternalModule("fs", function (exports) {
     });
   }
 
-  exports.writeFile = function (path, data, encoding_) {
+  exports.writeFile = function (path, data, encoding_, callback) {
     var encoding = (typeof(encoding_) == 'string' ? encoding_ : 'utf8');
     var callback_ = arguments[arguments.length - 1];
     var callback = (typeof(callback_) == 'function' ? callback_ : null);
@@ -564,7 +598,7 @@ var fsModule = createInternalModule("fs", function (exports) {
     });
   }
 
-  exports.readFile = function (path, encoding_) {
+  exports.readFile = function (path, encoding_, callback) {
     var encoding = typeof(encoding_) == 'string' ? encoding : 'utf8';
     var callback_ = arguments[arguments.length - 1];
     var callback = (typeof(callback_) == 'function' ? callback_ : null);
@@ -926,7 +960,10 @@ Module.prototype._loadContent = function (content, filename) {
 
   try {
     var compiledWrapper = process.compile(wrapper, filename);
-    compiledWrapper.apply(self.exports, [self.exports, require, self, filename, path.dirname(filename)]);
+    var dirName = path.dirname(filename);
+    if (filename === process.argv[1])
+      process.checkBreak();
+    compiledWrapper.apply(self.exports, [self.exports, require, self, filename, dirName]);
   } catch (e) {
     return e;
   }

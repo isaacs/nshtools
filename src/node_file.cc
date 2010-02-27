@@ -3,14 +3,19 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <dirent.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <assert.h>
 #include <string.h>
 #include <errno.h>
+#include <limits.h>
 
-#include <dirent.h>
+/* used for readlink, AIX doesn't provide it */
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
 
 namespace node {
 
@@ -56,6 +61,8 @@ static int After(eio_req *req) {
       case EIO_RMDIR:
       case EIO_MKDIR:
       case EIO_FTRUNCATE:
+      case EIO_LINK:
+      case EIO_SYMLINK:
       case EIO_CHMOD:
         argc = 0;
         break;
@@ -72,10 +79,18 @@ static int After(eio_req *req) {
         break;
 
       case EIO_STAT:
+      case EIO_LSTAT:
       {
         struct stat *s = reinterpret_cast<struct stat*>(req->ptr2);
         argc = 2;
         argv[1] = BuildStatsObject(s);
+        break;
+      }
+      
+      case EIO_READLINK:
+      {
+        argc = 2;
+        argv[1] = String::New(static_cast<char*>(req->ptr2), req->result);
         break;
       }
 
@@ -185,6 +200,82 @@ static Handle<Value> Stat(const Arguments& args) {
     int ret = stat(*path, &s);
     if (ret != 0) return ThrowException(errno_exception(errno));
     return scope.Close(BuildStatsObject(&s));
+  }
+}
+
+static Handle<Value> LStat(const Arguments& args) {
+  HandleScope scope;
+
+  if (args.Length() < 1 || !args[0]->IsString()) {
+    return THROW_BAD_ARGS;
+  }
+
+  String::Utf8Value path(args[0]->ToString());
+
+  if (args[1]->IsFunction()) {
+    ASYNC_CALL(lstat, args[1], *path)
+  } else {
+    struct stat s;
+    int ret = lstat(*path, &s);
+    if (ret != 0) return ThrowException(errno_exception(errno));
+    return scope.Close(BuildStatsObject(&s));
+  }
+}
+
+static Handle<Value> Symlink(const Arguments& args) {
+  HandleScope scope;
+
+  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsString()) {
+    return THROW_BAD_ARGS;
+  }
+
+  String::Utf8Value dest(args[0]->ToString());
+  String::Utf8Value path(args[1]->ToString());
+
+  if (args[2]->IsFunction()) {
+    ASYNC_CALL(symlink, args[2], *dest, *path)
+  } else {
+    int ret = symlink(*dest, *path);
+    if (ret != 0) return ThrowException(errno_exception(errno));
+    return Undefined();
+  }
+}
+
+static Handle<Value> Link(const Arguments& args) {
+  HandleScope scope;
+
+  if (args.Length() < 2 || !args[0]->IsString() || !args[1]->IsString()) {
+    return THROW_BAD_ARGS;
+  }
+
+  String::Utf8Value orig_path(args[0]->ToString());
+  String::Utf8Value new_path(args[1]->ToString());
+
+  if (args[2]->IsFunction()) {
+    ASYNC_CALL(link, args[2], *orig_path, *new_path)
+  } else {
+    int ret = link(*orig_path, *new_path);
+    if (ret != 0) return ThrowException(errno_exception(errno));
+    return Undefined();
+  }
+}
+
+static Handle<Value> ReadLink(const Arguments& args) {
+  HandleScope scope;
+
+  if (args.Length() < 1 || !args[0]->IsString()) {
+    return THROW_BAD_ARGS;
+  }
+
+  String::Utf8Value path(args[0]->ToString());
+
+  if (args[1]->IsFunction()) {
+    ASYNC_CALL(readlink, args[1], *path)
+  } else {
+    char buf[PATH_MAX];
+    ssize_t bz = readlink(*path, buf, PATH_MAX);
+    if (bz == -1) return ThrowException(errno_exception(errno));
+    return scope.Close(String::New(buf));
   }
 }
 
@@ -306,10 +397,6 @@ static Handle<Value> SendFile(const Arguments& args) {
   }
 }
 
-static inline int scandir_one(struct dirent *unused) {
-  return 1;
-}
-
 static Handle<Value> ReadDir(const Arguments& args) {
   HandleScope scope;
 
@@ -322,26 +409,27 @@ static Handle<Value> ReadDir(const Arguments& args) {
   if (args[1]->IsFunction()) {
     ASYNC_CALL(readdir, args[1], *path, 0 /*flags*/)
   } else {
-    struct dirent **eps;
-    int n = scandir(*path, &eps, scandir_one, alphasort);
+    DIR *dir = opendir(*path);
+    if (!dir) return ThrowException(errno_exception(errno));
 
-    if ( n >= 0) {
-      int cnt;
-      char *name;
+    struct dirent *ent;
 
-      Local<Array> res = Array::New(n);
+    Local<Array> files = Array::New();
+    char *name;
+    int i = 0;
 
-      for(cnt = 0; cnt < n; ++cnt) {
-        name = eps[cnt]->d_name;
+    while (ent = readdir(dir)) {
+      name = ent->d_name;
 
-        if (name [0] != '.') {
-          res->Set(Integer::New(cnt), String::New(name));
-        }
+      if (name[0] != '.' || (name[1] && (name[1] != '.' || name[2]))) {
+        files->Set(Integer::New(i), String::New(name));
+        i++;
       }
-      return scope.Close(res);
-    } else {
-      return ThrowException(errno_exception(errno));
     }
+
+    closedir(dir);
+
+    return scope.Close(files);
   }
 }
 
@@ -488,6 +576,10 @@ void File::Initialize(Handle<Object> target) {
   NODE_SET_METHOD(target, "sendfile", SendFile);
   NODE_SET_METHOD(target, "readdir", ReadDir);
   NODE_SET_METHOD(target, "stat", Stat);
+  NODE_SET_METHOD(target, "lstat", LStat);
+  NODE_SET_METHOD(target, "link", Link);
+  NODE_SET_METHOD(target, "symlink", Symlink);
+  NODE_SET_METHOD(target, "readlink", ReadLink);
   NODE_SET_METHOD(target, "unlink", Unlink);
   NODE_SET_METHOD(target, "write", Write);
   
