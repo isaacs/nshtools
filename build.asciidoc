@@ -21,7 +21,7 @@ build.js - an example build script using nshtools used to build web page documen
 
 build.js looks for files ending in .asciidoc and invokes asciidoc to turn them into web pages.
 
-== Examples
+== EXAMPLES
 
 .basic
 ----
