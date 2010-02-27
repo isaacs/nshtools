@@ -23,7 +23,9 @@ build.js looks for files ending in .asciidoc and invokes asciidoc to turn them i
 
 == EXAMPLES
 
-.basic
+build.js is simple.
+
+.simple
 ----
 node build.js
 ----
