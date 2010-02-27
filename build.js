@@ -9,9 +9,7 @@ if(process.paths.indexOf(process.cwd()) < 0) {
   process.paths.push(process.cwd());
 }
 
-var nshtools = require('nshtools'),
-    nsh = nshtools.createNshtool();
-
+var nsh = require('nshtools').createNshtool();
 
 /* Main script body */
 (function () {
