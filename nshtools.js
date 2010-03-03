@@ -52,19 +52,49 @@ echo = function (message, nonl) {
  * of the option. (e.g. --prefix=/home/username, then contents would contain /home/username)
  */
 getOption = function(option, callback) {
-  var self = this, scan_options = true, i = 0, arg = '';
+  var self = this, scan_options = true, i = 0, next = 1, arg = '';
   if (self.argv.length <= 0) {
     scan_options = false;
   } 
   while(scan_options) {
     arg = self.argv[i];
-    if (arg && arg.indexOf(option) === 0) {
-      delete self.argv[i];
-      callback(undefined, arg.substr(option.length + 1));
-      return true;
+    /* Check to see if we have a long option or short */
+    if (arg !== undefined && arg.indexOf('--') === 0) {
+      if (arg && arg.indexOf(option) === 0) {
+        delete self.argv[i];
+        callback(undefined, arg.substr(option.length + 1));
+        return true;
+      }    
+    } else if (arg !== undefined && arg.indexOf('-') === 0) {
+      next = i + 1;
+      if (option.length === 2) {
+        /* Do we have a singleton or a short option list? */
+        /* Do we have a short option followed by a non-option arg? */
+        if (self.argv.length > next && self.argv[next].indexOf('-') < 0) {
+          arg = self.argv[next];
+          delete self.argv[next];
+          delete self.argv[i];
+          callback(undefined, arg);
+        } else {
+          delete self.argv[i];
+          callback();
+        }
+        return true;
+      } else {
+        /* Check for trailing arg to assign to last letter in short option list */
+        /* If we have a list then push the individual short options on to the argv stack. */
+        nsh.echo("DEBUG combined short options not implemented.");
+        return false; // FIXME: need to implement this.
+      }
+    } else if (arg !== undefined){
+      if (arg && arg.indexOf(option) === 0) {
+        delete self.argv[i];
+        callback(undefined, arg.substr(option.length + 1));
+        return true;
+      }    
     }
     i += 1;
-    if (i >= self.argv.length) {
+    if (i >= self.argv.length && arg === undefined) {
       scan_options = false;
     }
   }
