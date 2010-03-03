@@ -199,12 +199,12 @@ run = function () {
 cp = function (source, target, callback) {
   var self = this;
 
-  fs.readFile(source, 'binary', function (read_error, content) {
+  fs.readFile(source, function (read_error, content) {
     if (read_error) {
       callback('cp: ' + source + ' ' + target + ': ' + read_error);
       return;
     }
-    fs.writeFile(target, content, 'binary', function (write_error) {
+    fs.writeFile(target, content, function (write_error) {
       if (write_error) {
         callback('cp: ' + source + ' ' + target + ': ' + write_error);
         return;
@@ -228,12 +228,12 @@ cp = function (source, target, callback) {
 mv = function (source, target, callback) {
   var self = this;
 
-  fs.readFile(source, 'binary', function (read_error, content) {
+  fs.readFile(source, function (read_error, content) {
     if (read_error) {
       callback('mv: ' + source + ' ' + target + ': ' + read_error);
       return;
     }
-    fs.writeFile(target, content, 'binary', function (write_error) {
+    fs.writeFile(target, content, function (write_error) {
       if (write_error) {
         callback('mv: ' + source + ' ' + target + ': ' + write_error);
         return;
