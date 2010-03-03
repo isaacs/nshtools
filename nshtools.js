@@ -202,7 +202,7 @@ cp = function (source, target, callback) {
     callback = self.NoOp;
   }
   //FIXME: check to see if encoding is still a require option for binary content.
-  fs.readFile(source, function (read_error, content) {
+  fs.readFile(source,{'encoding' : 'binary'}, function (read_error, content) {
     if (read_error) {
       callback('cp: ' + source + ' ' + target + ': ' + read_error);
       return;
@@ -235,7 +235,7 @@ mv = function (source, target, callback) {
   }
 
   //FIXME: check to see if encoding is still a require option for binary content.
-  fs.readFile(source, function (read_error, content) {
+  fs.readFile(source, {'encoding' : 'binary'}, function (read_error, content) {
     if (read_error) {
       callback('mv: ' + source + ' ' + target + ': ' + read_error);
       return;
