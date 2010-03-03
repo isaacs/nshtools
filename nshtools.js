@@ -198,7 +198,10 @@ run = function () {
  */
 cp = function (source, target, callback) {
   var self = this;
-
+  if (callback === undefined) {
+    callback = self.NoOp;
+  }
+  //FIXME: check to see if encoding is still a require option for binary content.
   fs.readFile(source, function (read_error, content) {
     if (read_error) {
       callback('cp: ' + source + ' ' + target + ': ' + read_error);
@@ -212,7 +215,7 @@ cp = function (source, target, callback) {
       if (self.verbose) {
         sys.puts(source + " -> " + target);
       }
-      callback(undefined);
+      callback(undefined);    
     });
   });
 };
@@ -227,7 +230,11 @@ cp = function (source, target, callback) {
  */
 mv = function (source, target, callback) {
   var self = this;
+  if (callback === undefined) {
+    callback = self.NoOp;
+  }
 
+  //FIXME: check to see if encoding is still a require option for binary content.
   fs.readFile(source, function (read_error, content) {
     if (read_error) {
       callback('mv: ' + source + ' ' + target + ': ' + read_error);
@@ -265,6 +272,11 @@ mv = function (source, target, callback) {
  * two parameters are passed - error, path.
  */
 globFolder = function (path, wildcards, callback) {
+  var self = this;
+
+  if (callback === undefined) {
+    callback = self.NoOp;
+  }
   if (path === '' || path === null || path === undefined) {
     path = '.';
   }
