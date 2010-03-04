@@ -1,7 +1,7 @@
 syncme.js(1)
 ============
 R. S. Doiel, <rsdoiel@gmail.com>
-version 0.0.0x 2010.02.27
+version 0.0.0x 2010.03.03
 
 == NAME
 

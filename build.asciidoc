@@ -1,7 +1,7 @@
 build.js(1)
 ===========
 R. S. Doiel <rsdoiel@gmail.com>
-Version, 0.0.1x, 2010.02.27
+Version, 0.0.1x, 2010.03 .03
 
 copyright (c) 2010, R. S. Doiel, all rights reserved
 
@@ -13,7 +13,7 @@ build.js - an example build script using nshtools used to build web page documen
         
 == REQUIREMENTS
 
-* node >= 1.30 footnote:[see link:http://nodejs.org[nodejs.org] for details.]
+* node >= 1.30 footnote:[tested with v0.1.30-46-gd5ee777; see link:http://nodejs.org[nodejs.org] for details.]
 * asciidoc >= 8 footnote:[see link:http://http://www.methods.co.nz/asciidoc/[asciidoc] for details.]
 * nshtools footnote:[see link:README.asciidoc[README.asciidoc] and link:INSTALL.asciidoc[INSTALL.asciidoc] for details]
 

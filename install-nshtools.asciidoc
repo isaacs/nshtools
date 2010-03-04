@@ -1,7 +1,7 @@
 install-nshtools.js(1)
 ======================
 R. S. Doiel <rsdoiel@gmail.com>
-Version, 0.0.1x, 2010.02.26
+Version, 0.0.1x, 2010.03.03
 
 copyright (c) 2010, R. S. Doiel, all rights reserved
 

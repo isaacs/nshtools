@@ -1,7 +1,7 @@
 simple copy with nshtool
 ========================
 R. S. Doiel, <rsdoiel@gmail.com>
-version 0.0.1x 2010-02-26
+version 0.0.1x 2010.03.03
 
 == work queues in nshtools.js
 

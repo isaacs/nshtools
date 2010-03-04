@@ -1,7 +1,7 @@
 nshtools.js(1)
 ==============
 R. S. Doiel, <rsdoiel@gmail.com>
-version 0.0.1x 2010.02.26
+version 0.0.1x 2010.03.03
 
 == NAME
 

@@ -24,7 +24,7 @@ var sys = require('sys'),
     fs = require('fs'),
     path = require('path');
 
-version = '0.0.1x 2010.02.26';
+version = '0.0.1x 2010.03.03';
 
 /*
  * echo, prompt, run are helpful for creating a simple call
