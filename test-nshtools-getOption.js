@@ -59,83 +59,81 @@ nsh.getOption('-t', function(t_error, arg) {
 
 nsh.echo("Testing Combined short Options (-zxvf):");
 nsh.argv.push('-zxvf');
-nsh.getOption('-t', function(t_error, arg) {
-  if (t_error) {
-    nsh.echo("Oops should have found this: " + t_error);
-  }
-  nsh.echo('OK, found -t');
-  if (arg === undefined) {
-    nsh.echo('OK, found -t with related arg undefined OK.');
-  }
-});
-nsh.echo("Checking for remaining args: " + (function (args) {
-  var buf = [];
-  if (nsh.argv.indexOf('-x') < 0) {
-    buf.push('Oops, missing -x');
-  }
-  if (nsh.argv.indexOf('-v') < 0) {
-    buf.push('Oops, missing -v');
-  }
-  if (nsh.argv.indexOf('-f') < 0) {
-    buf.push('Oops, missing -f');
-  }
-  if (buf.length > 0) {
-    return "\n\t" + buf.join("\n\t");
-  }
-  return "Ok, -x, -v, -f found.";
-})(nsh.argv));
-
-nsh.argv = [];
-
-nsh.echo("Testing Short Option (-zxvf optional_arg):");
-nsh.argv.push('-zxvf');
-nsh.argv.push('optional_arg');
 nsh.getOption('-z', function(t_error, arg) {
   if (t_error) {
     nsh.echo("Oops should have found this: " + t_error);
   }
-  if (arg === undefined) {
-    nsh.echo('OK, found -z with undefined optional_arg.');
-  } else {
-    nsh.echo('Oops, found -z but stole "optional_arg" [' + arg + ']');
+  nsh.echo('OK, found -z');
+  if (arg !== undefined) {
+    nsh.echo("Oops, stole arg from something: " + arg);
   }
 });
-
 nsh.getOption('-x', function(t_error, arg) {
   if (t_error) {
     nsh.echo("Oops should have found this: " + t_error);
   }
-  if (arg === undefined) {
-    nsh.echo('OK, found -x with undefined optional_arg.');
-  } else {
-    nsh.echo('Oops, found -x but stole "optional_arg" [' + arg + ']');
+  nsh.echo('OK, found -x');
+  if (arg !== undefined) {
+    nsh.echo("Oops, stole arg from something: " + arg);
   }
 });
-
 nsh.getOption('-v', function(t_error, arg) {
   if (t_error) {
     nsh.echo("Oops should have found this: " + t_error);
   }
-  if (arg === undefined) {
-    nsh.echo('OK, found -v with undefined optional_arg.');
-  } else {
-    nsh.echo('Oops, found -v but stole "optional_arg" [' + arg + ']');
+  nsh.echo('OK, found -v');
+  if (arg !== undefined) {
+    nsh.echo("Oops, stole arg from something: " + arg);
   }
 });
-
 nsh.getOption('-f', function(t_error, arg) {
   if (t_error) {
     nsh.echo("Oops should have found this: " + t_error);
   }
+  nsh.echo('OK, found -f');
   if (arg === undefined) {
-    nsh.echo('Oops, found -f with undefined optional_arg.');
-  } else {
-    nsh.echo('Ok, found -f with "optional_arg" [' + arg + ']');
+    nsh.echo('Ok, did not define additional arg');
   }
 });
 
-
-
-
-
+nsh.argv = ['node', 'test-nshtools-getOption.js', '-zxvf', 'test.txt'];
+nsh.echo("Testing Short Option (-zxvf optional_arg):");
+nsh.getOption('-z', function(t_error, arg) {
+  if (t_error) {
+    nsh.echo("Oops should have found this: " + t_error);
+  }
+  nsh.echo('OK, found -z');
+  if (arg !== undefined) {
+    nsh.echo("Oops, stole arg from something: " + arg);
+  }
+});
+nsh.getOption('-x', function(t_error, arg) {
+  if (t_error) {
+    nsh.echo("Oops should have found this: " + t_error);
+  }
+  nsh.echo('OK, found -x');
+  if (arg !== undefined) {
+    nsh.echo("Oops, stole arg from something: " + arg);
+  }
+});
+nsh.getOption('-v', function(t_error, arg) {
+  if (t_error) {
+    nsh.echo("Oops should have found this: " + t_error);
+  }
+  nsh.echo('OK, found -v');
+  if (arg !== undefined) {
+    nsh.echo("Oops, stole arg from something: " + arg);
+  }
+});
+nsh.getOption('-f', function(t_error, arg) {
+  if (t_error) {
+    nsh.echo("Oops should have found this: " + t_error);
+  }
+  nsh.echo('OK, found -f');
+  if (arg === undefined) {
+    nsh.echo('Oops, found -f without option_arg.' + nsh.inspect(nsh.argv));
+  } else {
+    nsh.echo('Ok, -f ' + arg);
+  }
+});
 
