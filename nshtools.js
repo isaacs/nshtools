@@ -24,7 +24,7 @@ var sys = require('sys'),
     fs = require('fs'),
     path = require('path');
 
-version = '0.0.1x 2010.03.03';
+version = '0.0.1x 2010.03.05';
 
 /*
  * echo, prompt, run are helpful for creating a simple call
@@ -221,6 +221,7 @@ run = function () {
  * E.G. cp, mv
  */
 
+
 /**
  * cp - copy a file. All three parameters are required.
  * @param source - the filename for the copy source
@@ -233,7 +234,7 @@ cp = function (source, target, callback) {
   if (callback === undefined) {
     callback = self.NoOp;
   }
-  //FIXME: check to see if encoding is still a require option for binary content.
+
   fs.readFile(source,{'encoding' : 'binary'}, function (read_error, content) {
     if (read_error) {
       callback('cp: ' + source + ' ' + target + ': ' + read_error);
@@ -266,7 +267,6 @@ mv = function (source, target, callback) {
     callback = self.NoOp;
   }
 
-  //FIXME: check to see if encoding is still a require option for binary content.
   fs.readFile(source, {'encoding' : 'binary'}, function (read_error, content) {
     if (read_error) {
       callback('mv: ' + source + ' ' + target + ': ' + read_error);
@@ -348,6 +348,14 @@ createNshtool = function () {
   self.mv = mv;
   self.die = die;
   self.globFolder = globFolder;
+  self.ls = fs.readdir;
+  self.listDirectory = fs.readdir;
+  self.copy = cp;
+  self.move = mv;
+  self.remove = fs.unlink;
+  self.makeDirectory = fs.mkdir;
+  self.removeDirectory = fs.rmdir;
+
   process.mixin(self, process, sys, fs, path);
   
   return self;
@@ -363,6 +371,17 @@ exports.cp = cp;
 exports.mv = mv;
 exports.die = die;
 exports.globFolder = globFolder;
+
+/*
+ * Basic aliases for CommonJS interoperability
+ */
+exports.ls = fs.readdir;
+exports.listDirectory = fs.readdir;
+exports.copy = cp;
+exports.move = mv;
+exports.remove = fs.unlink;
+exports.makeDirectory = fs.mkdir;
+exports.removeDirectory = fs.rmdir;
 
 /**
  * DS - ds or data structures is just what sound likes. A *Simple*

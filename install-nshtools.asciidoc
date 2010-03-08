@@ -34,14 +34,14 @@ The default prefix path is your local home directory. The installer will fail if
 
 Install in your home directory footnote:[answer Y at the prompt].
 
-.home
+.install in your home directory
 ----
 node install-nshtools.js
 ----
 
 Install in /usr/local sing the `--prefix` option footnote:[answer Y at the prompt].
 
-.prefix
+.using a prefixed path
 ----
 node install-nshtools.js --prefix=/usr/local
 ----

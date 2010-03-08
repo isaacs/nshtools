@@ -25,7 +25,8 @@ build.js looks for files ending in .asciidoc and invokes asciidoc to turn them i
 
 build.js is simple.
 
-.build
+.build.js
 ----
 node build.js
 ----
+

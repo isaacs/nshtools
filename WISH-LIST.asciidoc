@@ -1,12 +1,11 @@
 Wish list
 =========
 R. S. Doiel, <rsdoiel@gmail.com>
-version 0.0.1x 2010.03.03
+version 0.0.1x 2010.03.05
+
 
 == Wish list for nshtools:
 
-* suppport more high level file operations
-** Add chmod method supporting ug=rwx,o=rx style parameters and wrapper methods makeWritable(), makeReadable(), makeExecutable()
 * implement a simple find object that supports functionality like -type, -name, -changed-since. (e.g. `nsh.find('.',{'type':'d'}, function (error, item) {...});`)
-
+* start tracking CommonJS and resolve implementation issues where appropriate. link:See http://wiki.commonjs.org/wiki/Filesystem/A/0http://wiki.commonjs.org/wiki/Filesystem/A/0[Filesystem proposal]
 

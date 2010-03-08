@@ -1,0 +1,12 @@
+BUGS
+====
+R.S. Doiel, <rsdoiel@gmail.com>
+version 0.0.1x 2010.03.03
+
+== OPEN BUGS
+
+* Need to make sure I'm handling encoding write when calling fs.readFile() and fs.writeFile(). Binary file copy might be getting corrupted. Encoding options seem to have changed in a recent release of node 1.30 (used to expect a string, now segfaults on string); RSD 2010.03.02
+
+== FIXED BUGS
+
+

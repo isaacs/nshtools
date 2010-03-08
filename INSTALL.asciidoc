@@ -30,7 +30,7 @@ nshtools needs to have node already installed. See link:http://nodejs.org[http:/
 node install-nshtools.js
 ----
 
-.local install (i.e. /usr/local)
+.install in /usr/local
 ----
 node install-nshtools.js --prefix=/usr/local
 ----
