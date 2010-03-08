@@ -1,0 +1,30 @@
+TODO 0.0.1
+==========
+R. S. Doiel, <rsdoiel@gmail.com>
+version 0.0.1x 2010.03.04
+
+== OVERVIEW
+
+This is a release to do check list.  0.0.1 will be the stable release after I finish with 0.0.1x (i.e. the experiment)
+
+== TODO BEFORE 0.0.1
+
+* (completed) Implement prompt and tasks
+* (completed) echo
+* (completed) getOption (i.e. handle long and short options)
+* Basic file operations
+** (completed) listDirectory or ls (alias for fs.readdir)
+** (completed, alias of cp) copy
+** (completed, alias of mv) move
+** (completed, alias to fs.unlink) remove
+** (completed, alias to fs.mkdir) makeDirectory
+** (completed, alias to fs.rmdir) removeDirectory
+** touch
+** isReadable
+** isWritable
+** isExecutable
+** changePermissions
+** changeOwnership
+** changeGroup
+* Find by type, date modified, owner, group or name (e.g. *.txt)
+
