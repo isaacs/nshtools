@@ -1,0 +1,47 @@
+{
+   "name": "nshtools",
+   "version": "0.0.1x",
+   "description": "A toolkit for shell scripting with NodeJS.",
+   "keywords": [
+       "node",
+       "shell",
+       "javascript" 
+   ],
+   "maintainers": [
+       {
+           "name": "R. S. Doiel",
+           "email": "rsdoiel@gmail.com",
+           "web": "http://github.com/rsdoiel" 
+       } 
+   ],
+   "bugs": {
+       "web": "http://github.com/rsdoiel/nshtools/issues" 
+   },
+   "licenses": [
+       {
+           "type": "Simplified BSD License",
+           "url": "http://opensource.org/licenses/bsd-license.php" 
+       }
+   ],
+   "repositories": [
+       {
+           "type": "git",
+           "url": "git://github.com/rsdoiel/nshtools.git"
+       } 
+   ],
+   "dependencies": {
+       "node": "1.31",
+   },
+   "os": ["linux", "macos"],
+   "cpu": ["x86", "ppc", "x86_64"],
+   "engines": ["node"],
+   "scripts": {
+       "install": "install-nshtools.js",
+       "build": "build.js",
+       "test": "test-nshtools.js" 
+   },
+   "directories": {
+       "lib": "lib/node/libraries",
+   } 
+}
+
