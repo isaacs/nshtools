@@ -1,11 +1,12 @@
 TODO 0.0.1
-==========
+===========
 R. S. Doiel, <rsdoiel@gmail.com>
-version 0.0.1x 2010.03.04
+version 0.0.1
+release 2010.03.11
 
 == OVERVIEW
 
-This is a release to do check list.  0.0.1 will be the stable release after I finish with 0.0.1x (i.e. the experiment)
+This is a release to do check list.
 
 == TODO BEFORE 0.0.1
 
@@ -19,12 +20,4 @@ This is a release to do check list.  0.0.1 will be the stable release after I fi
 ** (completed, alias to fs.unlink) remove
 ** (completed, alias to fs.mkdir) makeDirectory
 ** (completed, alias to fs.rmdir) removeDirectory
-** touch
-** isReadable
-** isWritable
-** isExecutable
-** changePermissions
-** changeOwnership
-** changeGroup
-* Find by type, date modified, owner, group or name (e.g. *.txt)
 

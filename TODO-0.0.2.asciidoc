@@ -1,0 +1,22 @@
+TODO 0.0.2
+==========
+R. S. Doiel, <rsdoiel@gmail.com>
+version 0.0.2x 
+release 2010.03.11
+
+== OVERVIEW
+
+This is a release to do check list.  0.0.2 will be the stable release after I finish with 0.0.2x (i.e. the experiment)
+
+== TODO BEFORE 0.0.2
+
+* better asynchronous assertive support
+* touch
+* isReadable
+* isWritable
+* isExecutable
+* changePermissions
+* changeOwnership
+* changeGroup
+* Find by type, date modified, owner, group or name (e.g. *.txt)
+

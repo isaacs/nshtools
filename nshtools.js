@@ -24,7 +24,8 @@ var sys = require('sys'),
     fs = require('fs'),
     path = require('path');
 
-version = '0.0.1x 2010.03.05';
+version = '0.0.2x';
+release = '2010.03.11';
 
 /*
  * echo, prompt, run are helpful for creating a simple call
@@ -33,14 +34,14 @@ version = '0.0.1x 2010.03.05';
 
 /**
  * echo - print a line to the console with or without a new line.
- * @param message - the message to print.
+ * @param text - the message to print.
  * @param nonl (optional) - if present suppress the final new line.
  */
-echo = function (message, nonl) {
+echo = function (text, nonl) {
   if (nonl === undefined) {
-    sys.puts(message);
+    sys.puts(text);
   } else {
-    sys.print(message);
+    sys.print(text);
   }
 };
 
@@ -253,6 +254,7 @@ cp = function (source, target, callback) {
   });
 };
 
+
 /**
  * mv = copy a file to a new one removing the original after completion. 
  * All three parameters are required.
@@ -292,6 +294,7 @@ mv = function (source, target, callback) {
   });
 };
 
+
 /**
  * globFolder - an overly simple approach to scan a folder for wild carded content.
  *
@@ -328,14 +331,15 @@ globFolder = function (path, wildcards, callback) {
   });
 };
 
+
 /**
  * createNshtool - create a new Nshtools object with
- * all the useful mixin stuff from process, sys, fs and path.
+ * all the useful stuff from process, sys, fs and path.
  */
 createNshtool = function () {
   var self = {};
   self.work_queue = [];
-  self.verbose = true;
+  self.verbose = false;
 
   self.version = version;
   self.echo = echo;
@@ -355,9 +359,9 @@ createNshtool = function () {
   self.remove = fs.unlink;
   self.makeDirectory = fs.mkdir;
   self.removeDirectory = fs.rmdir;
+  self.readFile = fs.readFile;
+  self.writeFile = fs.writeFile;
 
-  process.mixin(self, process, sys, fs, path);
-  
   return self;
 };
 
@@ -372,6 +376,7 @@ exports.mv = mv;
 exports.die = die;
 exports.globFolder = globFolder;
 
+
 /*
  * Basic aliases for CommonJS interoperability
  */
@@ -383,8 +388,9 @@ exports.remove = fs.unlink;
 exports.makeDirectory = fs.mkdir;
 exports.removeDirectory = fs.rmdir;
 
+
 /**
- * DS - ds or data structures is just what sound likes. A *Simple*
+ * DS or data structures is just what sound likes. A *Simple*
  * implementation of useful data structures (e.g. Stacks, Queues).
  * Thought it might be useful to have with nshtools.
  * 
@@ -515,4 +521,88 @@ exports.DS.prototype.top = DS.prototype.top;
 exports.DS.prototype.bottom = DS.prototype.bottom;
 exports.DS.prototype.popAll = DS.prototype.popAll;
 exports.DS.prototype.shiftAll = DS.prototype.shiftAll;
+
+
+/**
+ * Test - this is a set of methods for integrating assertive tests
+ * into shell scripts.
+ */
+this.createTest = function () { 
+  var self = this;
+
+  self.queue = new DS(QUEUE);
+  self.msgs = new DS(QUEUE);
+  self.successes = 0;
+  self.failures = 0;
+
+
+  self.echo = function (msg) {
+    var s;
+    if (msg) {
+      self.msgs.push(msg);
+      return true;
+    } else {
+      return self.msgs.shiftAll().join("\n");
+    }
+    return false;
+  };
+
+
+  self.success = function () {
+    self.successes += 1;
+  };
+  
+
+  self.fail = function (text) {
+    self.echo(text);
+    self.failures += 1;
+  };
+  
+
+  self.assertTrue = function (expression, text) {
+    if (expression === true) {
+      self.success();
+      return true;
+    }
+    self.fail("assertTrue Failed: " + text);
+    return false;
+  };
+
+
+  self.assertFalse = function (expression, text) {
+    if (expression === false) {
+      self.success();
+      return true;
+    }
+    self.fail("assertFalse Failed: " + text);
+    return false;
+  };
+
+
+  self.assertFail = function (text) {
+    self.fail(text);
+    return false;
+  };
+
+
+  self.addTest = function(label, callback) {
+    self.queue.push({'label' : label, 'callback' : callback});
+  };
+
+  
+  self.run = function () {
+    while (self.queue.length > 0) {
+      test = self.queue.shift();
+      self.echo(test.label);
+      test.callback(test.label);
+    }
+    return self.echo() + "\n" + 
+           self.successes + " passed\n" + 
+           self.failures + " failed\n";        
+  };
+
+  return self;
+};
+
+exports.createTest = this.createTest;
 
