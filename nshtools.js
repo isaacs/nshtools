@@ -184,7 +184,7 @@ run = function () {
   if (self.work_queue.length > 0) {
     /* Display the first message in queue. */
     if (self.work_queue[0].qtype === 'prompt') {
-      self.print(self.work_queue[0].message);
+      sys.print(self.work_queue[0].message);
     }
 
     /* If we're running in node-repl we'll throw an error on the
@@ -206,7 +206,7 @@ run = function () {
         /* Prompt for next action. */
         if (self.work_queue.length > 0) {
           if (self.work_queue[0].qtype === 'prompt') {
-            self.print(self.work_queue[0].message);
+            sys.print(self.work_queue[0].message);
           }
         } else {
           process.stdio.close();
@@ -333,7 +333,7 @@ globFolder = function (path, wildcards, callback) {
 
 
 /**
- * createNshtool - create a new Nshtools object with
+ * createNshtool - create a new Nshtool object with
  * all the useful stuff from process, sys, fs and path.
  */
 createNshtool = function () {
@@ -361,7 +361,13 @@ createNshtool = function () {
   self.removeDirectory = fs.rmdir;
   self.readFile = fs.readFile;
   self.writeFile = fs.writeFile;
-
+  self.inspect = sys.inspect;
+  self.print = sys.print;
+  self.puts = sys.puts;
+  self.stat = fs.stat;
+  self.unlink = fs.unlink;
+  self.argv = process.argv;
+  self.env = process.env;
   return self;
 };
 

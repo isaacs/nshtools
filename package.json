@@ -1,6 +1,6 @@
 {
    "name": "nshtools",
-   "version": "0.0.1x",
+   "version": "0.0.1",
    "description": "A toolkit for shell scripting with NodeJS.",
    "keywords": [
        "node",
@@ -36,7 +36,8 @@
    "cpu": ["x86", "ppc", "x86_64"],
    "engines": ["node"],
    "scripts": {
-       "install": "install-nshtools.js",
+       "install" : "install-nshtools.js",
+       "uninstall" : "uninstall-nshtools.js",
        "build": "build.js",
        "test": "test-nshtools.js" 
    },
