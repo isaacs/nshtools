@@ -29,20 +29,18 @@
            "url": "git://github.com/rsdoiel/nshtools.git"
        } 
    ],
-   "dependencies": {
-       "node": "1.31",
-   },
    "os": ["linux", "macos"],
    "cpu": ["x86", "ppc", "x86_64"],
-   "engines": ["node"],
+   "engines": ["node >=0.1.31"],
    "scripts": {
-       "install" : "install-nshtools.js",
-       "uninstall" : "uninstall-nshtools.js",
-       "build": "build.js",
-       "test": "test-nshtools.js" 
+       "uninstall" : "./uninstall-nshtools.js",
+       "preinstall" : "./install-nshtools.js",
+       "build": "./build.js",
+       "test": "./test-nshtools.js" 
    },
    "directories": {
-       "lib": "lib/node/libraries",
-   } 
+       "lib": "lib/node/libraries"
+   },
+   "main" : "nshtools"
 }
 
